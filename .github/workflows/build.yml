@@ -17,5 +17,6 @@ jobs:
     - run: mysql --version
     - run: mysqladmin create testdb
     - run: mysql -D testdb -e 'SELECT VERSION()'
+    - run: mysql -D testdb -e "SHOW VARIABLES LIKE '%socket%'"
     - run: ls
     - run: ls /tmp
