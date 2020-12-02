@@ -18,3 +18,4 @@ jobs:
     - run: mysqladmin create testdb
     - run: mysql -D testdb -e 'SELECT VERSION()'
     - run: ls
+    - run: ls /tmp
