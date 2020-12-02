@@ -1,5 +1,8 @@
 const execSync = require("child_process").execSync;
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const process = require('process');
 
 function run(command) {
   console.log(command);
@@ -41,6 +44,10 @@ if (process.platform == 'darwin') {
     '10.1': '10.1.48'
   };
   const fullVersion = versionMap[mariadbVersion];
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mariadb-'));
+  console.log(tmpDir);
+  process.chdir(tmpDir);
+  run(`pwd`);
   run(`curl -Ls -o mariadb.msi https://downloads.mariadb.com/MariaDB/mariadb-${fullVersion}/winx64-packages/mariadb-${fullVersion}-winx64.msi`);
   run(`msiexec /i mariadb.msi SERVICENAME=MariaDB /qn`);
 
