@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-2019
+          - os: ubuntu-latest
             mariadb-version: 10.5
     steps:
     - uses: ankane/setup-mariadb@tmpdir
@@ -17,6 +17,6 @@ jobs:
     - run: mysql --version
     - run: mysqladmin create testdb
     - run: mysql -D testdb -e 'SELECT VERSION()'
-    - run: mysql -D testdb -e "SHOW VARIABLES LIKE '%socket%'"
+    - run: mysql -e "SHOW VARIABLES LIKE '%socket%'"
     - run: ls
     - run: ls /tmp
