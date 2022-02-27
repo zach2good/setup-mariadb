@@ -75,6 +75,8 @@ if (process.platform == 'darwin') {
   run(`"${bin}\\mysql" -u root -e "CREATE USER 'runneradmin'@'localhost' IDENTIFIED BY ''"`);
   run(`"${bin}\\mysql" -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'runneradmin'@'localhost'"`);
   run(`"${bin}\\mysql" -u root -e "FLUSH PRIVILEGES"`);
+
+  run(`"${bin}\\mysql" -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"`);
 } else {
   const image = process.env['ImageOS'];
   if (image == 'ubuntu20') {
