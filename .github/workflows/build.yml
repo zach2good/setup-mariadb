@@ -2,17 +2,32 @@ name: build
 on: [push, pull_request]
 jobs:
   build:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
+          - os: ubuntu-22.04
+            mariadb-version: 10.9
+          - os: ubuntu-22.04
+            mariadb-version: 10.8
+          - os: ubuntu-20.04
+            mariadb-version: 10.9
+          - os: ubuntu-20.04
+            mariadb-version: 10.8
+          - os: ubuntu-20.04
+            mariadb-version: 10.7
           - os: ubuntu-20.04
             mariadb-version: 10.6
           - os: ubuntu-20.04
             mariadb-version: 10.5
           - os: ubuntu-18.04
+            mariadb-version: 10.9
+          - os: ubuntu-18.04
+            mariadb-version: 10.8
+          - os: ubuntu-18.04
+            mariadb-version: 10.7
+          - os: ubuntu-18.04
             mariadb-version: 10.6
           - os: ubuntu-18.04
             mariadb-version: 10.5
@@ -20,18 +35,40 @@ jobs:
             mariadb-version: 10.4
           - os: ubuntu-18.04
             mariadb-version: 10.3
-          - os: ubuntu-18.04
-            mariadb-version: 10.2
-          - os: macos-11.0
+          - os: macos-12
+            mariadb-version: 10.9
+          - os: macos-12
+            mariadb-version: 10.8
+          - os: macos-12
+            mariadb-version: 10.7
+          - os: macos-12
             mariadb-version: 10.6
-          - os: macos-11.0
+          - os: macos-12
             mariadb-version: 10.5
-          - os: macos-11.0
+          - os: macos-12
             mariadb-version: 10.4
-          - os: macos-11.0
+          - os: macos-12
             mariadb-version: 10.3
-          - os: macos-11.0
-            mariadb-version: 10.2
+          - os: macos-11
+            mariadb-version: 10.9
+          - os: macos-11
+            mariadb-version: 10.8
+          - os: macos-11
+            mariadb-version: 10.7
+          - os: macos-11
+            mariadb-version: 10.6
+          - os: macos-11
+            mariadb-version: 10.5
+          - os: macos-11
+            mariadb-version: 10.4
+          - os: macos-11
+            mariadb-version: 10.3
+          - os: macos-10.15
+            mariadb-version: 10.9
+          - os: macos-10.15
+            mariadb-version: 10.8
+          - os: macos-10.15
+            mariadb-version: 10.7
           - os: macos-10.15
             mariadb-version: 10.6
           - os: macos-10.15
@@ -40,8 +77,12 @@ jobs:
             mariadb-version: 10.4
           - os: macos-10.15
             mariadb-version: 10.3
-          - os: macos-10.15
-            mariadb-version: 10.2
+          - os: windows-2022
+            mariadb-version: 10.9
+          - os: windows-2022
+            mariadb-version: 10.8
+          - os: windows-2022
+            mariadb-version: 10.7
           - os: windows-2022
             mariadb-version: 10.6
           - os: windows-2022
@@ -50,8 +91,12 @@ jobs:
             mariadb-version: 10.4
           - os: windows-2022
             mariadb-version: 10.3
-          - os: windows-2022
-            mariadb-version: 10.2
+          - os: windows-2019
+            mariadb-version: 10.9
+          - os: windows-2019
+            mariadb-version: 10.8
+          - os: windows-2019
+            mariadb-version: 10.7
           - os: windows-2019
             mariadb-version: 10.6
           - os: windows-2019
@@ -60,28 +105,16 @@ jobs:
             mariadb-version: 10.4
           - os: windows-2019
             mariadb-version: 10.3
-          - os: windows-2019
-            mariadb-version: 10.2
-          - os: windows-2016
-            mariadb-version: 10.6
-          - os: windows-2016
-            mariadb-version: 10.5
-          - os: windows-2016
-            mariadb-version: 10.4
-          - os: windows-2016
-            mariadb-version: 10.3
-          - os: windows-2016
-            mariadb-version: 10.2
     steps:
-    - uses: actions/checkout@v2
-    - uses: ./.
-      with:
-        mariadb-version: ${{ matrix.mariadb-version }}
-        database: testdb
-    - run: mysql --version
-    - run: mysql -e 'SELECT VERSION()'
-    - run: mysql -e 'SELECT CURRENT_USER()'
-    - run: mysql -e 'SELECT DATABASE()'
-    - run: mysql -e "SHOW VARIABLES LIKE 'socket'"
-    - run: mysqladmin create testdb2
-    - run: mysql -D testdb -e 'SELECT DATABASE()'
+      - uses: actions/checkout@v3
+      - uses: ./.
+        with:
+          mariadb-version: ${{ matrix.mariadb-version }}
+          database: testdb
+      - run: mysql --version
+      - run: mysql -e 'SELECT VERSION()'
+      - run: mysql -e 'SELECT CURRENT_USER()'
+      - run: mysql -e 'SELECT DATABASE()'
+      - run: mysql -e "SHOW VARIABLES LIKE 'socket'"
+      - run: mysqladmin create testdb2
+      - run: mysql -D testdb -e 'SELECT DATABASE()'

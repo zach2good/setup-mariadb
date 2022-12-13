@@ -13,41 +13,42 @@ The missing action for MariaDB :tada:
 Add it as a step to your workflow
 
 ```yml
-    - uses: ankane/setup-mariadb@v1
+      - uses: ankane/setup-mariadb@v1
 ```
 
 ## Versions
 
-Specify a version (defaults to the latest)
+Specify a version
 
 ```yml
-    - uses: ankane/setup-mariadb@v1
-      with:
-        mariadb-version: 10.6
+      - uses: ankane/setup-mariadb@v1
+        with:
+          mariadb-version: 10.8
 ```
 
 Currently supports
 
-Version | `10.6` | `10.5` | `10.4` | `10.3` | `10.2`
---- | --- | --- | --- | --- | ---
-`ubuntu-20.04` | ✓ | ✓ | | |
-`ubuntu-18.04` | ✓ | ✓ | ✓ | ✓
-`macos-11.0` | ✓ | ✓ | ✓ | ✓ | ✓
-`macos-10.15` | ✓ | ✓ | ✓ | ✓ | ✓
-`windows-2022` | ✓ | ✓ | ✓ | ✓ | ✓
-`windows-2019` | ✓ | ✓ | ✓ | ✓ | ✓
-`windows-2016` | ✓ | ✓ | ✓ | ✓ | ✓
+Version | `10.9` | `10.8` | `10.7` | `10.6` | `10.5` | `10.4` | `10.3`
+--- | --- | --- | --- | --- | --- | --- | ---
+`ubuntu-22.04` | default | ✓ | | | | |
+`ubuntu-20.04` | default | ✓ | ✓ | ✓ | ✓ | |
+`ubuntu-18.04` | default | ✓ | ✓ | ✓ | ✓ | ✓ | ✓
+`macos-12` | ✓ | default | ✓ | ✓ | ✓ | ✓ | ✓ | ✓
+`macos-11` | ✓ | default | ✓ | ✓ | ✓ | ✓ | ✓ | ✓
+`macos-10.15` | ✓ | default | ✓ | ✓ | ✓ | ✓ | ✓
+`windows-2022` | default | ✓ | ✓ | ✓ | ✓ | ✓ | ✓
+`windows-2019` | default | ✓ | ✓ | ✓ | ✓ | ✓ | ✓
 
 Test against multiple versions
 
 ```yml
     strategy:
       matrix:
-        mariadb-version: [10.6, 10.5, 10.4, 10.3, 10.2]
+        mariadb-version: [10.9, 10.8, 10.7, 10.6, 10.5, 10.4, 10.3]
     steps:
-    - uses: ankane/setup-mariadb@v1
-      with:
-        mariadb-version: ${{ matrix.mariadb-version }}
+      - uses: ankane/setup-mariadb@v1
+        with:
+          mariadb-version: ${{ matrix.mariadb-version }}
 ```
 
 ## Options
@@ -55,9 +56,9 @@ Test against multiple versions
 Create a database
 
 ```yml
-    - uses: ankane/setup-mariadb@v1
-      with:
-        database: testdb
+      - uses: ankane/setup-mariadb@v1
+        with:
+          database: testdb
 ```
 
 ## Extra Steps
@@ -65,7 +66,7 @@ Create a database
 Run queries
 
 ```yml
-    - run: mysql -D testdb -e 'SELECT VERSION()'
+      - run: mysql -D testdb -e 'SELECT VERSION()'
 ```
 
 ## Related Actions

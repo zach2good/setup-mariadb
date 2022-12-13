@@ -27,9 +27,23 @@ function addToPath(newPath) {
   fs.appendFileSync(process.env.GITHUB_PATH, `${newPath}\n`);
 }
 
-const mariadbVersion = parseFloat(process.env['INPUT_MARIADB-VERSION'] || '10.6').toFixed(1);
+function isMac() {
+  return process.platform == 'darwin';
+}
 
-if (!['10.6', '10.5', '10.4', '10.3', '10.2'].includes(mariadbVersion)) {
+function isWindows() {
+  return process.platform == 'win32';
+}
+
+function formulaPresent(formula) {
+  const tap = `/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core`;
+  return fs.existsSync(`${tap}/Formula/${formula}.rb`) || fs.existsSync(`${tap}/Aliases/${formula}`);
+}
+
+const defaultVersion = isMac() ? '10.8' : '10.9';
+const mariadbVersion = parseFloat(process.env['INPUT_MARIADB-VERSION'] || defaultVersion).toFixed(1);
+
+if (!['10.9', '10.8', '10.7', '10.6', '10.5', '10.4', '10.3'].includes(mariadbVersion)) {
   throw 'Invalid MariaDB version: ' + mariadbVersion;
 }
 
@@ -37,32 +51,38 @@ const database = process.env['INPUT_DATABASE'];
 
 let bin;
 
-if (process.platform == 'darwin') {
+if (isMac()) {
+  const formula = `mariadb@${mariadbVersion}`;
+  if (mariadbVersion == '10.9' && !formulaPresent(formula)) {
+    run('brew update');
+  }
+
   // install
-  run(`brew install mariadb@${mariadbVersion}`);
+  run(`brew install ${formula}`);
 
   // start
-  bin = `/usr/local/opt/mariadb@${mariadbVersion}/bin`;
+  bin = `/usr/local/opt/${formula}/bin`;
   run(`${bin}/mysql.server start`);
 
   addToPath(bin);
 
   // add permissions
-  if (mariadbVersion == '10.3' || mariadbVersion == '10.2') {
+  if (mariadbVersion == '10.3') {
     run(`${bin}/mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO ''@'localhost'"`);
     run(`${bin}/mysql -u root -e "FLUSH PRIVILEGES"`);
   }
-} else if (process.platform == 'win32') {
+} else if (isWindows()) {
   // install
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mariadb-'));
   process.chdir(tmpDir);
   const versionMap = {
-    '10.6': '10.6.5',
-    '10.5': '10.5.13',
-    '10.4': '10.4.22',
-    '10.3': '10.3.32',
-    '10.2': '10.2.41',
-    '10.1': '10.1.48'
+    '10.9': '10.9.3',
+    '10.8': '10.8.5',
+    '10.7': '10.7.6',
+    '10.6': '10.6.10',
+    '10.5': '10.5.17',
+    '10.4': '10.4.26',
+    '10.3': '10.3.36'
   };
   const fullVersion = versionMap[mariadbVersion];
   run(`curl -Ls -o mariadb.msi https://downloads.mariadb.com/MariaDB/mariadb-${fullVersion}/winx64-packages/mariadb-${fullVersion}-winx64.msi`);
@@ -79,7 +99,7 @@ if (process.platform == 'darwin') {
   run(`"${bin}\\mysql" -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"`);
 } else {
   const image = process.env['ImageOS'];
-  if (image == 'ubuntu20') {
+  if (image == 'ubuntu20' || image == 'ubuntu22') {
     // clear previous data
     run(`sudo systemctl stop mysql.service`);
     run(`sudo rm -rf /var/lib/mysql`);
@@ -87,7 +107,7 @@ if (process.platform == 'darwin') {
 
   // install
   run(`sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8`);
-  run(`echo "deb http://downloads.mariadb.com/MariaDB/mariadb-${mariadbVersion}/repo/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) main" | sudo tee /etc/apt/sources.list.d/mariadb.list`);
+  run(`echo "deb https://downloads.mariadb.com/MariaDB/mariadb-${mariadbVersion}/repo/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) main" | sudo tee /etc/apt/sources.list.d/mariadb.list`);
   run(`sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/mariadb.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"`);
   run(`sudo apt-get install mariadb-server-${mariadbVersion}`);
 
