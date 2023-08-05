@@ -95,7 +95,10 @@ if (isMac()) {
   bin = `C:\\Program Files\\MariaDB ${mariadbVersion}\\bin`;
   addToPath(bin);
 
-  // add user
+  // Set character set
+  run(`"${bin}\\mysql" -u root -e "SET character_set_server = 'utf8mb4';"`);
+  
+  // Add user
   run(`"${bin}\\mysql" -u root -e "CREATE USER 'runneradmin'@'localhost' IDENTIFIED BY ''"`);
   run(`"${bin}\\mysql" -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'runneradmin'@'localhost'"`);
   run(`"${bin}\\mysql" -u root -e "FLUSH PRIVILEGES"`);
