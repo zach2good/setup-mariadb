@@ -23,26 +23,26 @@ Specify a version
 ```yml
       - uses: ankane/setup-mariadb@v1
         with:
-          mariadb-version: 10.11
+          mariadb-version: "10.11"
 ```
 
 Currently supports
 
-Version | `11.0` | `10.11` | `10.10` | `10.9` | `10.6` | `10.5` | `10.4`
---- | --- | --- | --- | --- | --- | --- | ---
-`ubuntu-22.04` | ✓ | default | ✓ | ✓ | | |
-`ubuntu-20.04` | ✓ | default | ✓ | ✓ | ✓ | ✓ |
-`macos-12` | ✓ | default | ✓ | ✓ | ✓ | ✓ | ✓ | ✓
-`macos-11` | ✓ | default | ✓ | ✓ | ✓ | ✓ | ✓ | ✓
-`windows-2022` | ✓ | default | ✓ | ✓ | ✓ | ✓ | ✓
-`windows-2019` | ✓ | default | ✓ | ✓ | ✓ | ✓ | ✓
+Version | `11.1` | `11.0` | `10.11` | `10.10` | `10.6` | `10.5` | `10.4`
+--- | ---| --- | --- | --- | --- | --- | ---
+`ubuntu-22.04` | ✓ | ✓ | default | ✓ | | |
+`ubuntu-20.04` | ✓ | ✓ | default | ✓ | ✓ | ✓ |
+`macos-12` | ✓ | ✓ | default | ✓ | ✓ | ✓ | ✓ | ✓
+`macos-11` | ✓ | ✓ | default | ✓ | ✓ | ✓ | ✓ | ✓
+`windows-2022` | ✓ | ✓ | default | ✓ | ✓ | ✓ | ✓
+`windows-2019` | ✓ | ✓ | default | ✓ | ✓ | ✓ | ✓
 
 Test against multiple versions
 
 ```yml
     strategy:
       matrix:
-        mariadb-version: ["11.0", 10.11, "10.10", 10.9]
+        mariadb-version: ["11.1", "11.0", "10.11", "10.10"]
     steps:
       - uses: ankane/setup-mariadb@v1
         with:
